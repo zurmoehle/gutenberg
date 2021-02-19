@@ -16,6 +16,7 @@ import { getDefaultBlockName } from '@wordpress/blocks';
  */
 import { useBlockEditContext } from '../block-edit/context';
 import blockAutocompleter from '../../autocompleters/block';
+import linkAutocompleter from '../../autocompleters/link';
 
 /**
  * Shared reference to an empty array for cases where it is important to avoid
@@ -42,6 +43,7 @@ function BlockEditorAutocomplete( props ) {
 		if ( name === getDefaultBlockName() ) {
 			filteredCompleters = filteredCompleters.concat( [
 				blockAutocompleter,
+				linkAutocompleter,
 			] );
 		}
 
