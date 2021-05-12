@@ -27,6 +27,12 @@
 		},
 		"spacing": {
 			"padding": true
+		},
+		"__experimentalBorder": {
+			"color": true,
+			"style": true,
+			"width": true,
+			"__experimentalSkipSerialization": true
 		}
 	}
 }
