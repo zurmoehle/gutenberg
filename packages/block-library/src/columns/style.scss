@@ -137,6 +137,6 @@
 
 	// Use of !important is required to remove border support styles.
 	&:last-child {
-		border-right: none !important;
+		border: none !important;
 	}
 }
