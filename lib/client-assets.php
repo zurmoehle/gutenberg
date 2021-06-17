@@ -207,14 +207,14 @@ function gutenberg_register_vendor_scripts( $scripts ) {
 	gutenberg_register_vendor_script(
 		$scripts,
 		'react',
-		'https://unpkg.com/react@17.0.1/umd/react' . $react_suffix . '.js',
+		'https://unpkg.com/react@18.0.0-rc.0/umd/react' . $react_suffix . '.js',
 		// See https://github.com/pmmmwh/react-refresh-webpack-plugin/blob/main/docs/TROUBLESHOOTING.md#externalising-react.
 		SCRIPT_DEBUG ? array( 'wp-react-refresh-entry', 'wp-polyfill' ) : array( 'wp-polyfill' )
 	);
 	gutenberg_register_vendor_script(
 		$scripts,
 		'react-dom',
-		'https://unpkg.com/react-dom@17.0.1/umd/react-dom' . $react_suffix . '.js',
+		'https://unpkg.com/react-dom@18.0.0-rc.0/umd/react-dom' . $react_suffix . '.js',
 		array( 'react' )
 	);
 }
