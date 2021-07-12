@@ -110,7 +110,7 @@
 	// the border block support allowing user defined borders.
 	&.is-style-divided .wp-block-column {
 		// Default divided border to use until user specifies something different.
-		border: 1px solid $gray-900;
+		border: 1px solid currentColor;
 
 		// Disable top and left borders.
 		border-top: none !important;
