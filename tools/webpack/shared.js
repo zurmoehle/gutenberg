@@ -15,7 +15,7 @@ const ReadableJsAssetsWebpackPlugin = require( '@wordpress/readable-js-assets-we
 
 const {
 	NODE_ENV: mode = 'development',
-	WP_DEVTOOL: devtool = mode === 'production' ? false : 'source-map',
+	WP_DEVTOOL: devtool = 'source-map',
 } = process.env;
 
 const baseConfig = {
@@ -27,7 +27,7 @@ const baseConfig = {
 			new TerserPlugin( {
 				cache: true,
 				parallel: true,
-				sourceMap: mode !== 'production',
+				sourceMap: true,
 				terserOptions: {
 					output: {
 						comments: /translators:/i,
@@ -46,7 +46,7 @@ const baseConfig = {
 	mode,
 	module: {
 		rules: compact( [
-			mode !== 'production' && {
+			{
 				test: /\.js$/,
 				use: require.resolve( 'source-map-loader' ),
 				enforce: 'pre',
