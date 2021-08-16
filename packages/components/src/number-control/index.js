@@ -7,7 +7,7 @@ import classNames from 'classnames';
 /**
  * WordPress dependencies
  */
-import { forwardRef } from '@wordpress/element';
+import { forwardRef, useCallback } from '@wordpress/element';
 import { isRTL } from '@wordpress/i18n';
 
 /**
@@ -20,9 +20,143 @@ import { add, subtract, roundClamp } from '../utils/math';
 import { useJumpStep } from '../utils/hooks';
 import { isValueEmpty } from '../utils/values';
 
+// Creates a state reducer for specialization of InputControl.
+const makeReducer = ( {
+	baseValue,
+	dragDirection,
+	isDragEnabled,
+	isShiftStepEnabled,
+	min,
+	max,
+	required,
+	shiftStep,
+	step,
+} ) => ( state, action ) => {
+	const { type, payload } = action;
+	const event = payload?.event;
+	const currentValue = state.value;
+
+	/**
+	 * Handles custom UP and DOWN Keyboard events
+	 */
+	if (
+		type === inputControlActionTypes.PRESS_UP ||
+		type === inputControlActionTypes.PRESS_DOWN
+	) {
+		const enableShift = event.shiftKey && isShiftStepEnabled;
+
+		const incrementalValue = enableShift
+			? parseFloat( shiftStep ) * parseFloat( step )
+			: parseFloat( step );
+		let nextValue = isValueEmpty( currentValue ) ? baseValue : currentValue;
+
+		if ( event?.preventDefault ) {
+			event.preventDefault();
+		}
+
+		if ( type === inputControlActionTypes.PRESS_UP ) {
+			nextValue = add( nextValue, incrementalValue );
+		}
+
+		if ( type === inputControlActionTypes.PRESS_DOWN ) {
+			nextValue = subtract( nextValue, incrementalValue );
+		}
+
+		nextValue = roundClamp( nextValue, min, max, incrementalValue );
+
+		state.value = nextValue;
+	}
+
+	/**
+	 * Handles drag to update events
+	 */
+	if ( type === inputControlActionTypes.DRAG && isDragEnabled ) {
+		const { delta, shiftKey } = payload;
+		const [ x, y ] = delta;
+		const modifier = shiftKey
+			? parseFloat( shiftStep ) * parseFloat( step )
+			: parseFloat( step );
+
+		let directionModifier;
+		let directionBaseValue;
+
+		switch ( dragDirection ) {
+			case 'n':
+				directionBaseValue = y;
+				directionModifier = -1;
+				break;
+
+			case 'e':
+				directionBaseValue = x;
+				directionModifier = isRTL() ? -1 : 1;
+				break;
+
+			case 's':
+				directionBaseValue = y;
+				directionModifier = 1;
+				break;
+
+			case 'w':
+				directionBaseValue = x;
+				directionModifier = isRTL() ? 1 : -1;
+				break;
+		}
+
+		const distance = directionBaseValue * modifier * directionModifier;
+		let nextValue;
+
+		if ( distance !== 0 ) {
+			nextValue = roundClamp(
+				add( currentValue, distance ),
+				min,
+				max,
+				modifier
+			);
+
+			state.value = nextValue;
+		}
+	}
+
+	/**
+	 * Handles ENTER key press or commits. The latter originates from blur
+	 * events or ENTER key presses when isPressEnterToChange is true).
+	 */
+	if (
+		( type === inputControlActionTypes.PRESS_ENTER &&
+			! state.isPressEnterToChange ) ||
+		type === inputControlActionTypes.COMMIT
+	) {
+		const applyEmptyValue = required === false && currentValue === '';
+
+		state.value = applyEmptyValue
+			? currentValue
+			: roundClamp( currentValue, min, max, step );
+
+		state.error = null;
+	}
+
+	/**
+	 * Handles changes when isPressEnterToChange is false in order to skip
+	 * propagation of invalid values through onChange.
+	 */
+	if (
+		type === inputControlActionTypes.CHANGE &&
+		! state.isPressEnterToChange
+	) {
+		const { valid } = event.target.validity;
+		if ( ! valid ) {
+			state.error = 'invalid';
+		}
+	}
+
+	return state;
+};
+
+const passThrough = ( state ) => state;
+
 export function NumberControl(
 	{
-		__unstableStateReducer: stateReducer = ( state ) => state,
+		__unstableStateReducer: stateReducer = passThrough,
 		className,
 		dragDirection = 'n',
 		hideHTMLArrows = false,
@@ -51,137 +185,35 @@ export function NumberControl(
 	const autoComplete = typeProp === 'number' ? 'off' : null;
 	const classes = classNames( 'components-number-control', className );
 
-	/**
-	 * "Middleware" function that intercepts updates from InputControl.
-	 * This allows us to tap into actions to transform the (next) state for
-	 * InputControl.
-	 *
-	 * @param {Object} state  State from InputControl
-	 * @param {Object} action Action triggering state change
-	 * @return {Object} The updated state to apply to InputControl
-	 */
-	const numberControlStateReducer = ( state, action ) => {
-		const { type, payload } = action;
-		const event = payload?.event;
-		const currentValue = state.value;
+	const numberControlStateReducer = useCallback(
+		makeReducer( {
+			baseValue,
+			dragDirection,
+			isDragEnabled,
+			isShiftStepEnabled,
+			min,
+			max,
+			required,
+			shiftStep,
+			step,
+		} ),
+		[
+			baseValue,
+			dragDirection,
+			isDragEnabled,
+			isShiftStepEnabled,
+			min,
+			max,
+			required,
+			shiftStep,
+			step,
+		]
+	);
 
-		/**
-		 * Handles custom UP and DOWN Keyboard events
-		 */
-		if (
-			type === inputControlActionTypes.PRESS_UP ||
-			type === inputControlActionTypes.PRESS_DOWN
-		) {
-			const enableShift = event.shiftKey && isShiftStepEnabled;
-
-			const incrementalValue = enableShift
-				? parseFloat( shiftStep ) * parseFloat( step )
-				: parseFloat( step );
-			let nextValue = isValueEmpty( currentValue )
-				? baseValue
-				: currentValue;
-
-			if ( event?.preventDefault ) {
-				event.preventDefault();
-			}
-
-			if ( type === inputControlActionTypes.PRESS_UP ) {
-				nextValue = add( nextValue, incrementalValue );
-			}
-
-			if ( type === inputControlActionTypes.PRESS_DOWN ) {
-				nextValue = subtract( nextValue, incrementalValue );
-			}
-
-			nextValue = roundClamp( nextValue, min, max, incrementalValue );
-
-			state.value = nextValue;
-		}
-
-		/**
-		 * Handles drag to update events
-		 */
-		if ( type === inputControlActionTypes.DRAG && isDragEnabled ) {
-			const { delta, shiftKey } = payload;
-			const [ x, y ] = delta;
-			const modifier = shiftKey
-				? parseFloat( shiftStep ) * parseFloat( step )
-				: parseFloat( step );
-
-			let directionModifier;
-			let directionBaseValue;
-
-			switch ( dragDirection ) {
-				case 'n':
-					directionBaseValue = y;
-					directionModifier = -1;
-					break;
-
-				case 'e':
-					directionBaseValue = x;
-					directionModifier = isRTL() ? -1 : 1;
-					break;
-
-				case 's':
-					directionBaseValue = y;
-					directionModifier = 1;
-					break;
-
-				case 'w':
-					directionBaseValue = x;
-					directionModifier = isRTL() ? 1 : -1;
-					break;
-			}
-
-			const distance = directionBaseValue * modifier * directionModifier;
-			let nextValue;
-
-			if ( distance !== 0 ) {
-				nextValue = roundClamp(
-					add( currentValue, distance ),
-					min,
-					max,
-					modifier
-				);
-
-				state.value = nextValue;
-			}
-		}
-
-		/**
-		 * Handles ENTER key press or commits. The latter originates from blur
-		 * events or ENTER key presses when isPressEnterToChange is true).
-		 */
-		if (
-			( type === inputControlActionTypes.PRESS_ENTER &&
-				! state.isPressEnterToChange ) ||
-			type === inputControlActionTypes.COMMIT
-		) {
-			const applyEmptyValue = required === false && currentValue === '';
-
-			state.value = applyEmptyValue
-				? currentValue
-				: roundClamp( currentValue, min, max, step );
-
-			state.error = null;
-		}
-
-		/**
-		 * Handles changes when isPressEnterToChange is false in order to skip
-		 * propagation of invalid values through onChange.
-		 */
-		if (
-			type === inputControlActionTypes.CHANGE &&
-			! state.isPressEnterToChange
-		) {
-			const { valid } = event.target.validity;
-			if ( ! valid ) {
-				state.error = 'invalid';
-			}
-		}
-
-		return state;
-	};
+	const reducer = useCallback(
+		composeStateReducers( numberControlStateReducer, stateReducer ),
+		[ numberControlStateReducer, stateReducer ]
+	);
 
 	return (
 		<Input
@@ -200,10 +232,7 @@ export function NumberControl(
 			step={ jumpStep }
 			type={ typeProp }
 			value={ valueProp }
-			__unstableStateReducer={ composeStateReducers(
-				numberControlStateReducer,
-				stateReducer
-			) }
+			__unstableStateReducer={ reducer }
 		/>
 	);
 }

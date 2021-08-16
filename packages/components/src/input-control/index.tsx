@@ -26,9 +26,11 @@ function useUniqueId( idProp?: string ) {
 	return idProp || id;
 }
 
+const passThrough = ( state: any ) => state;
+
 export function InputControl(
 	{
-		__unstableStateReducer: stateReducer = ( state ) => state,
+		__unstableStateReducer: stateReducer = passThrough,
 		__unstableInputWidth,
 		className,
 		disabled = false,

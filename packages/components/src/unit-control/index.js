@@ -7,7 +7,7 @@ import classnames from 'classnames';
 /**
  * WordPress dependencies
  */
-import { forwardRef, useRef } from '@wordpress/element';
+import { forwardRef, useCallback, useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { ENTER } from '@wordpress/keycodes';
 
@@ -21,9 +21,11 @@ import UnitSelectControl from './unit-select-control';
 import { CSS_UNITS, getParsedValue, getValidParsedUnit } from './utils';
 import { useControlledState } from '../utils/hooks';
 
+const passThrough = ( state ) => state;
+
 function UnitControl(
 	{
-		__unstableStateReducer: stateReducer = ( state ) => state,
+		__unstableStateReducer: stateReducer = passThrough,
 		autoComplete = 'off',
 		className,
 		disabled = false,
@@ -119,16 +121,7 @@ function UnitControl(
 		}
 	};
 
-	/**
-	 * "Middleware" function that intercepts updates from InputControl.
-	 * This allows us to tap into actions to transform the (next) state for
-	 * InputControl.
-	 *
-	 * @param {Object} state  State from InputControl
-	 * @param {Object} action Action triggering state change
-	 * @return {Object} The updated state to apply to InputControl
-	 */
-	const unitControlStateReducer = ( state, action ) => {
+	const unitControlStateReducer = useRef( ( state, action ) => {
 		/*
 		 * On commits (when pressing ENTER and on blur if
 		 * isPressEnterToChange is true), if a parse has been performed
@@ -142,7 +135,12 @@ function UnitControl(
 		}
 
 		return state;
-	};
+	} );
+
+	const reducer = useCallback(
+		composeStateReducers( unitControlStateReducer.current, stateReducer ),
+		[ unitControlStateReducer, stateReducer ]
+	);
 
 	const inputSuffix = ! disableUnits ? (
 		<UnitSelectControl
@@ -187,10 +185,7 @@ function UnitControl(
 				suffix={ inputSuffix }
 				value={ value }
 				step={ step }
-				__unstableStateReducer={ composeStateReducers(
-					unitControlStateReducer,
-					stateReducer
-				) }
+				__unstableStateReducer={ reducer }
 			/>
 		</Root>
 	);

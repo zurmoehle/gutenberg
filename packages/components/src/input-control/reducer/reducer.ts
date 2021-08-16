@@ -8,7 +8,7 @@ import type { SyntheticEvent } from 'react';
 /**
  * WordPress dependencies
  */
-import { useReducer } from '@wordpress/element';
+import { useCallback, useReducer } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -164,8 +164,11 @@ export function useInputControlStateReducer(
 	stateReducer: StateReducer = initialStateReducer,
 	initialState: Partial< InputState > = initialInputControlState
 ) {
+	const reducer = useCallback( inputControlStateReducer( stateReducer ), [
+		stateReducer,
+	] );
 	const [ state, dispatch ] = useReducer< StateReducer >(
-		inputControlStateReducer( stateReducer ),
+		reducer,
 		mergeInitialState( initialState )
 	);
 
