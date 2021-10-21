@@ -39,6 +39,7 @@ import * as latestComments from './latest-comments';
 import * as latestPosts from './latest-posts';
 import * as logInOut from './loginout';
 import * as list from './list';
+import * as listItem from './list-item';
 import * as missing from './missing';
 import * as more from './more';
 import * as nextpage from './nextpage';
@@ -124,6 +125,7 @@ export const __experimentalGetCoreBlocks = () => [
 	heading,
 	gallery,
 	list,
+	listItem,
 	quote,
 
 	// Register all remaining core blocks.
