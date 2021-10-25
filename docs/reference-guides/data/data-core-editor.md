@@ -1392,7 +1392,7 @@ _Related_
 
 ### trashPost
 
-Action generator for trashing the current post in the editor.
+Action for trashing the current post in the editor.
 
 ### undo
 
