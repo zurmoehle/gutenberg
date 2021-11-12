@@ -382,13 +382,19 @@ export function renderElement( element, context, legacyContext = {} ) {
 			return renderChildren( props.children, context, legacyContext );
 
 		case RawHTML:
-			const { children, ...wrapperProps } = props;
+			const {
+				children,
+				dangerouslySetInnerHTML,
+				...wrapperProps
+			} = props;
 
 			return renderNativeComponent(
 				isEmpty( wrapperProps ) ? null : 'div',
 				{
 					...wrapperProps,
-					dangerouslySetInnerHTML: { __html: children },
+					children,
+					dangerouslySetInnerHTML,
+					// dangerouslySetInnerHTML: { __html: children },
 				},
 				context,
 				legacyContext

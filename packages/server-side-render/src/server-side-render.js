@@ -66,6 +66,7 @@ export default function ServerSideRender( props ) {
 	const {
 		attributes,
 		block,
+		// eslint-disable-next-line no-unused-vars
 		className,
 		httpMethod = 'GET',
 		urlQueryArgs,
@@ -193,12 +194,13 @@ export default function ServerSideRender( props ) {
 	if ( isLoading ) {
 		return (
 			<LoadingResponsePlaceholder { ...props } showLoader={ showLoader }>
-				{ hasResponse && (
-					<RawHTML className={ className }>{ response }</RawHTML>
-				) }
+				{ hasResponse && <RawHTML>{ response }</RawHTML> }
 			</LoadingResponsePlaceholder>
 		);
 	}
 
-	return <RawHTML className={ className }>{ response }</RawHTML>;
+	// eslint-disable-next-line no-console
+	console.log( response );
+
+	return <RawHTML>{ response }</RawHTML>;
 }
