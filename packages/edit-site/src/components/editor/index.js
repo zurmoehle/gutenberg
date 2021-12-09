@@ -1,7 +1,13 @@
 /**
  * WordPress dependencies
  */
-import { useEffect, useState, useMemo, useCallback } from '@wordpress/element';
+import {
+	useEffect,
+	useState,
+	useMemo,
+	useCallback,
+	Suspense,
+} from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { Popover, Button, Notice } from '@wordpress/components';
 import { EntityProvider, store as coreStore } from '@wordpress/core-data';
@@ -206,13 +212,22 @@ function Editor( { onError } ) {
 											content={
 												<>
 													<EditorNotices />
-													{ template && (
-														<BlockEditor
-															setIsInserterOpen={
-																setIsInserterOpened
-															}
-														/>
-													) }
+													<Suspense
+														fallback={
+															<h1>
+																Very Ugly
+																Loading State
+															</h1>
+														}
+													>
+														{ template && (
+															<BlockEditor
+																setIsInserterOpen={
+																	setIsInserterOpened
+																}
+															/>
+														) }
+													</Suspense>
 													{ templateResolved &&
 														! template &&
 														settings?.siteUrl &&

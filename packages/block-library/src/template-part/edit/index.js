@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { useSelect } from '@wordpress/data';
+import { useSuspenseSelect } from '@wordpress/data';
 import {
 	BlockControls,
 	useBlockProps,
@@ -50,7 +50,7 @@ export default function TemplatePartEdit( {
 		area,
 		enableSelection,
 		hasResolvedReplacements,
-	} = useSelect(
+	} = useSuspenseSelect(
 		( select ) => {
 			const {
 				getEditedEntityRecord,
