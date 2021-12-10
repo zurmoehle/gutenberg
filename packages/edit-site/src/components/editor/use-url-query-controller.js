@@ -10,7 +10,7 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { useLocation, useHistory } from '../routes';
 import { store as editSiteStore } from '../../store';
 
-export default function URLQueryController() {
+export default function useURLQueryController() {
 	const { setTemplate, setTemplatePart, showHomepage, setPage } = useDispatch(
 		editSiteStore
 	);
@@ -60,6 +60,4 @@ export default function URLQueryController() {
 			isMounted = false;
 		};
 	}, [ postId, postType ] );
-
-	return null;
 }

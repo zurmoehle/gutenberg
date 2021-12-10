@@ -22,6 +22,7 @@ import { getQueryArgs } from '@wordpress/url';
 import './plugins';
 import './hooks';
 import { store as editSiteStore } from './store';
+import { Routes } from './components/routes';
 import EditSiteApp from './components/app';
 import getIsListPage from './utils/get-is-list-page';
 
@@ -64,7 +65,12 @@ export function reinitializeEditor( target, settings ) {
 		}
 	}
 
-	render( <EditSiteApp reboot={ reboot } />, target );
+	render(
+		<Routes>
+			<EditSiteApp reboot={ reboot } />
+		</Routes>,
+		target
+	);
 }
 
 /**

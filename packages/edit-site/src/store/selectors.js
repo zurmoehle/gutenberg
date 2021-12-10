@@ -327,3 +327,6 @@ export const getCurrentTemplateTemplateParts = createRegistrySelector(
 			.filter( ( { templatePart } ) => !! templatePart );
 	}
 );
+
+export const getIsEntitiesSavedStatesOpen = ( state ) =>
+	state.isEntitiesSavedStatesOpen;

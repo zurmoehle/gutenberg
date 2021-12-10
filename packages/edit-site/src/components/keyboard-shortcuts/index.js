@@ -18,7 +18,7 @@ import { store as editSiteStore } from '../../store';
 import { SIDEBAR_BLOCK } from '../sidebar/constants';
 import { STORE_NAME } from '../../store/constants';
 
-function KeyboardShortcuts( { openEntitiesSavedStates } ) {
+function KeyboardShortcuts() {
 	const {
 		__experimentalGetDirtyEntityRecords,
 		isSavingEntityRecord,
@@ -35,7 +35,9 @@ function KeyboardShortcuts( { openEntitiesSavedStates } ) {
 		[]
 	);
 	const { redo, undo } = useDispatch( coreStore );
-	const { setIsListViewOpened } = useDispatch( editSiteStore );
+	const { setIsListViewOpened, setIsEntitiesSavesStateOpen } = useDispatch(
+		editSiteStore
+	);
 	const { enableComplementaryArea, disableComplementaryArea } = useDispatch(
 		interfaceStore
 	);
@@ -50,7 +52,7 @@ function KeyboardShortcuts( { openEntitiesSavedStates } ) {
 		);
 
 		if ( ! isSaving && isDirty ) {
-			openEntitiesSavedStates();
+			setIsEntitiesSavesStateOpen( true );
 		}
 	} );
 

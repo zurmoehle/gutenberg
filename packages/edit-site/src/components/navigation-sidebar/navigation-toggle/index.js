@@ -81,6 +81,7 @@ function NavigationToggle( { icon } ) {
 				label={ __( 'Toggle navigation' ) }
 				onClick={ toggleNavigationPanel }
 				showTooltip
+				data-route-change-focus-target=""
 			>
 				{ buttonIcon }
 			</Button>

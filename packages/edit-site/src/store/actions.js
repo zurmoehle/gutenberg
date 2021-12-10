@@ -520,3 +520,10 @@ export function* closeGeneralSidebar() {
 		editSiteStoreName
 	);
 }
+
+export function setIsEntitiesSavedStatesOpen( isOpen ) {
+	return {
+		type: 'SET_IS_ENTITIES_SAVED_STATES_OPEN',
+		isOpen,
+	};
+}

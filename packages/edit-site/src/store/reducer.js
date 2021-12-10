@@ -206,6 +206,15 @@ export function listViewPanel( state = false, action ) {
 	return state;
 }
 
+export function isEntitiesSavedStatesOpen( state = false, action ) {
+	switch ( action.type ) {
+		case 'SET_IS_ENTITIES_SAVED_STATES_OPEN':
+			return action.isOpen;
+		default:
+			return state;
+	}
+}
+
 export default combineReducers( {
 	preferences,
 	deviceType,
@@ -215,4 +224,5 @@ export default combineReducers( {
 	navigationPanel,
 	blockInserterPanel,
 	listViewPanel,
+	isEntitiesSavedStatesOpen,
 } );
