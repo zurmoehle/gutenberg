@@ -1,6 +1,7 @@
 /**
  * WordPress dependencies
  */
+import { useRef } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import {
 	Button,
@@ -16,6 +17,7 @@ import { useReducedMotion } from '@wordpress/compose';
  * Internal dependencies
  */
 import { store as editSiteStore } from '../../../store';
+import useResetFocusOnRouteChange from '../../routes/use-reset-focus-on-route-change';
 
 function NavigationToggle( { icon } ) {
 	const { isNavigationOpen, isRequestingSiteIcon, siteIconUrl } = useSelect(
@@ -68,6 +70,9 @@ function NavigationToggle( { icon } ) {
 		buttonIcon = <Icon size="36px" icon={ icon } />;
 	}
 
+	const buttonRef = useRef();
+	useResetFocusOnRouteChange( buttonRef );
+
 	return (
 		<motion.div
 			className={
@@ -81,7 +86,7 @@ function NavigationToggle( { icon } ) {
 				label={ __( 'Toggle navigation' ) }
 				onClick={ toggleNavigationPanel }
 				showTooltip
-				data-route-change-focus-target=""
+				ref={ buttonRef }
 			>
 				{ buttonIcon }
 			</Button>
