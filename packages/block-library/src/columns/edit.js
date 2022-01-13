@@ -7,12 +7,14 @@ import { dropRight, get, times } from 'lodash';
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import {
 	Notice,
 	PanelBody,
 	RangeControl,
 	ToggleControl,
+	Button,
+	Modal,
 } from '@wordpress/components';
 
 import {
@@ -30,6 +32,7 @@ import {
 	createBlocksFromInnerBlocksTemplate,
 	store as blocksStore,
 } from '@wordpress/blocks';
+import { useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -240,29 +243,82 @@ function Placeholder( { clientId, name, setAttributes } ) {
 	const { replaceInnerBlocks } = useDispatch( blockEditorStore );
 	const blockProps = useBlockProps();
 
+	const [ isAccessibleModalOpen, setAccessibleModalOpen ] = useState( false );
+	const accessibleTitle = sprintf(
+		// translators: %s: Name of the block.
+		__( 'Get Started with %s Block' ),
+		get( blockType, [ 'title' ] )
+	);
+	const accessibleModalDescriptionId = `accessible-description-modal-${ clientId }`;
+	const ariaPropsModal = {
+		aria: {
+			describedby: accessibleModalDescriptionId,
+		},
+	};
+
 	return (
-		<div { ...blockProps }>
-			<__experimentalBlockVariationPicker
-				icon={ get( blockType, [ 'icon', 'src' ] ) }
-				label={ get( blockType, [ 'title' ] ) }
-				variations={ variations }
-				onSelect={ ( nextVariation = defaultVariation ) => {
-					if ( nextVariation.attributes ) {
-						setAttributes( nextVariation.attributes );
-					}
-					if ( nextVariation.innerBlocks ) {
-						replaceInnerBlocks(
-							clientId,
-							createBlocksFromInnerBlocksTemplate(
-								nextVariation.innerBlocks
-							),
-							true
-						);
-					}
-				} }
-				allowSkip
-			/>
-		</div>
+		<>
+			<div { ...blockProps }>
+				<Button
+					className="accessible-focus-on-block-enter"
+					onClick={ () => setAccessibleModalOpen( true ) }
+				>
+					{ accessibleTitle }
+				</Button>
+				{ isAccessibleModalOpen && (
+					<Modal
+						title={ accessibleTitle }
+						onRequestClose={ () => setAccessibleModalOpen( false ) }
+						{ ...ariaPropsModal }
+					>
+						<p id={ accessibleModalDescriptionId }>
+							Select a block variation below to get started. You
+							can also skip this step.
+						</p>
+						<__experimentalBlockVariationPicker
+							icon={ get( blockType, [ 'icon', 'src' ] ) }
+							label={ get( blockType, [ 'title' ] ) }
+							variations={ variations }
+							onSelect={ ( nextVariation = defaultVariation ) => {
+								if ( nextVariation.attributes ) {
+									setAttributes( nextVariation.attributes );
+								}
+								if ( nextVariation.innerBlocks ) {
+									replaceInnerBlocks(
+										clientId,
+										createBlocksFromInnerBlocksTemplate(
+											nextVariation.innerBlocks
+										),
+										true
+									);
+								}
+							} }
+							allowSkip
+						/>
+					</Modal>
+				) }
+				<__experimentalBlockVariationPicker
+					icon={ get( blockType, [ 'icon', 'src' ] ) }
+					label={ get( blockType, [ 'title' ] ) }
+					variations={ variations }
+					onSelect={ ( nextVariation = defaultVariation ) => {
+						if ( nextVariation.attributes ) {
+							setAttributes( nextVariation.attributes );
+						}
+						if ( nextVariation.innerBlocks ) {
+							replaceInnerBlocks(
+								clientId,
+								createBlocksFromInnerBlocksTemplate(
+									nextVariation.innerBlocks
+								),
+								true
+							);
+						}
+					} }
+					allowSkip
+				/>
+			</div>
+		</>
 	);
 }
 

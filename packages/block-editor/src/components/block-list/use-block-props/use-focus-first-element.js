@@ -95,6 +95,14 @@ export function useFocusFirstElement( clientId ) {
 			return;
 		}
 
+		const accessibleFocusElement = ref.current.querySelector(
+			'button.accessible-focus-on-block-enter'
+		);
+		if ( accessibleFocusElement ) {
+			accessibleFocusElement.focus();
+			return;
+		}
+
 		placeCaretAtHorizontalEdge( target, isReverse );
 	}, [ initialPosition ] );
 

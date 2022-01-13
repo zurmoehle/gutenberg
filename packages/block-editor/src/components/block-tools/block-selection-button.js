@@ -190,7 +190,7 @@ function BlockSelectionButton( { clientId, rootClientId, blockElement } ) {
 			if ( focusedBlockUid ) {
 				event.preventDefault();
 				selectBlock( focusedBlockUid );
-			} else if ( isTab && selectedBlockClientId ) {
+			}/* else if ( isTab && selectedBlockClientId ) {
 				let nextTabbable;
 
 				if ( navigateDown ) {
@@ -207,10 +207,10 @@ function BlockSelectionButton( { clientId, rootClientId, blockElement } ) {
 
 				if ( nextTabbable ) {
 					event.preventDefault();
-					nextTabbable.focus();
+//					nextTabbable.focus();
 					clearSelectedBlock();
 				}
-			}
+			}*/
 		}
 	}
 
