@@ -262,9 +262,8 @@ function Placeholder( { clientId, name, setAttributes } ) {
 				<Button
 					className="accessible-focus-on-block-enter"
 					onClick={ () => setAccessibleModalOpen( true ) }
-				>
-					{ accessibleTitle }
-				</Button>
+					label={ accessibleTitle }
+				/>
 				{ isAccessibleModalOpen && (
 					<Modal
 						title={ accessibleTitle }
