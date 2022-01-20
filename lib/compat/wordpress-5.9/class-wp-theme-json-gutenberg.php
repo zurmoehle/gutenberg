@@ -241,13 +241,13 @@ class WP_Theme_JSON_Gutenberg {
 		'custom'          => null,
 		'layout'          => array(
 			'contentSize' => null,
+			'position'    => null,
 			'wideSize'    => null,
 		),
 		'spacing'         => array(
 			'blockGap' => null,
 			'margin'   => null,
 			'padding'  => null,
-			'position' => null,
 			'units'    => null,
 		),
 		'typography'      => array(
