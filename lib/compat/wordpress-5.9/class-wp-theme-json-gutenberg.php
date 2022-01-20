@@ -179,7 +179,7 @@ class WP_Theme_JSON_Gutenberg {
 		'padding-right'              => array( 'spacing', 'padding', 'right' ),
 		'padding-bottom'             => array( 'spacing', 'padding', 'bottom' ),
 		'padding-left'               => array( 'spacing', 'padding', 'left' ),
-		'position'                   => array( 'spacing', 'position' ),
+		'position'                   => array( 'layout', 'position' ),
 		'--wp--style--block-gap'     => array( 'spacing', 'blockGap' ),
 		'text-decoration'            => array( 'typography', 'textDecoration' ),
 		'text-transform'             => array( 'typography', 'textTransform' ),
