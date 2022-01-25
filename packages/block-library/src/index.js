@@ -69,7 +69,6 @@ import * as postContent from './post-content';
 import * as postDate from './post-date';
 import * as postExcerpt from './post-excerpt';
 import * as postFeaturedImage from './post-featured-image';
-import * as postLink from './post-link';
 import * as postNavigationLink from './post-navigation-link';
 import * as postTemplate from './post-template';
 import * as postTerms from './post-terms';
@@ -84,6 +83,7 @@ import * as queryPaginationPrevious from './query-pagination-previous';
 import * as queryTitle from './query-title';
 import * as quote from './quote';
 import * as reusableBlock from './block';
+import * as readMore from './read-more';
 import * as rss from './rss';
 import * as search from './search';
 import * as separator from './separator';
@@ -194,7 +194,6 @@ export const __experimentalGetCoreBlocks = () => [
 	postAuthor,
 	postDate,
 	postTerms,
-	postLink,
 	postNavigationLink,
 	postTemplate,
 	queryPagination,
@@ -202,6 +201,7 @@ export const __experimentalGetCoreBlocks = () => [
 	queryPaginationNumbers,
 	queryPaginationPrevious,
 	postComments,
+	readMore,
 	logInOut,
 	termDescription,
 	queryTitle,
