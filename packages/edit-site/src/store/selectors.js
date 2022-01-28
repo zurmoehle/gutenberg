@@ -96,6 +96,7 @@ export const getSettings = createSelector(
 			outlineMode: true,
 			focusMode: isFeatureActive( state, 'focusMode' ),
 			hasFixedToolbar: isFeatureActive( state, 'fixedToolbar' ),
+			showIconLabels: isFeatureActive( state, 'showIconLabels' ),
 			__experimentalSetIsInserterOpened: setIsInserterOpen,
 			__experimentalReusableBlocks: getReusableBlocks( state ),
 		};
@@ -119,6 +120,7 @@ export const getSettings = createSelector(
 		state.settings,
 		isFeatureActive( state, 'focusMode' ),
 		isFeatureActive( state, 'fixedToolbar' ),
+		isFeatureActive( state, 'showIconLabels' ),
 		getReusableBlocks( state ),
 	]
 );
